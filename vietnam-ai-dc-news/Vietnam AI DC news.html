@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>베트남 AI 데이터센터 동향</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Segoe UI', 'Malgun Gothic', sans-serif;
+    background: #f4f6fa;
+    color: #1a2332;
+    line-height: 1.6;
+    padding: 40px 20px;
+  }
+  .container { max-width: 960px; margin: 0 auto; }
+  header {
+    text-align: center;
+    margin-bottom: 40px;
+    padding-bottom: 24px;
+    border-bottom: 3px solid #0a4d8c;
+  }
+  header h1 {
+    font-size: 2.2rem;
+    color: #0a4d8c;
+    margin-bottom: 8px;
+  }
+  header p { color: #5a6a7e; font-size: 1rem; }
+  .timeline-line {
+    display: inline-block;
+    width: 60px;
+    height: 4px;
+    background: #f39c12;
+    margin: 12px 0;
+    border-radius: 2px;
+  }
+  .intro {
+    background: #fff;
+    border-left: 4px solid #0a4d8c;
+    border-radius: 8px;
+    padding: 20px 24px;
+    margin-bottom: 28px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  }
+  .intro .lang-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 10px 0;
+  }
+  .intro .lang-row + .lang-row {
+    border-top: 1px solid #eef1f5;
+  }
+  .intro .lang-tag {
+    flex-shrink: 0;
+    background: #0a4d8c;
+    color: #fff;
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 12px;
+    letter-spacing: 0.5px;
+    margin-top: 3px;
+    min-width: 36px;
+    text-align: center;
+  }
+  .intro .lang-text {
+    color: #2c3e50;
+    font-size: 0.98rem;
+    line-height: 1.55;
+  }
+  .article {
+    display: flex;
+    gap: 24px;
+    background: #fff;
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    transition: transform 0.2s, box-shadow 0.2s;
+    align-items: flex-start;
+  }
+  .article:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+  }
+  .article-content { flex: 1; min-width: 0; }
+  .article-image {
+    flex-shrink: 0;
+    width: 200px;
+    height: 140px;
+    border-radius: 8px;
+    overflow: hidden;
+    background: #e8edf3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .article-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .badge {
+    display: inline-block;
+    background: #0a4d8c;
+    color: #fff;
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 12px;
+    margin-bottom: 8px;
+  }
+  .date {
+    color: #f39c12;
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-bottom: 6px;
+  }
+  .article h2 {
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+    color: #1a2332;
+    line-height: 1.4;
+  }
+  .source {
+    color: #5a6a7e;
+    font-size: 0.85rem;
+    margin-bottom: 8px;
+    font-style: italic;
+  }
+  .summary {
+    color: #2c3e50;
+    font-size: 0.95rem;
+    margin-bottom: 12px;
+  }
+  .article a {
+    color: #0a4d8c;
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 500;
+    word-break: break-all;
+  }
+  .article a:hover { text-decoration: underline; }
+  .summary-box {
+    margin-top: 30px;
+    padding: 24px;
+    background: linear-gradient(135deg, #0a4d8c 0%, #1a6cb0 100%);
+    color: #fff;
+    border-radius: 12px;
+  }
+  .summary-box h3 { margin-bottom: 12px; font-size: 1.1rem; }
+  .summary-box p { font-size: 0.95rem; opacity: 0.95; }
+  .map-section {
+    margin-top: 36px;
+    padding: 28px;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    border-top: 4px solid #0a4d8c;
+  }
+  .map-section h2 {
+    color: #0a4d8c;
+    font-size: 1.4rem;
+    margin-bottom: 10px;
+  }
+  .map-section .map-desc {
+    color: #5a6a7e;
+    font-size: 0.95rem;
+    margin-bottom: 18px;
+    line-height: 1.6;
+  }
+  .map-section img {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+    border: 1px solid #d6dce6;
+    display: block;
+  }
+  .map-section .caption {
+    margin-top: 12px;
+    font-size: 0.85rem;
+    color: #5a6a7e;
+    text-align: center;
+    font-style: italic;
+  }
+  @media (max-width: 640px) {
+    .article { flex-direction: column-reverse; }
+    .article-image { width: 100%; height: 180px; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1>베트남 AI 데이터센터 동향</h1>
+    <div class="timeline-line"></div>
+    <p>Vietnam AI Data Center Industry — 주요 투자·계약 뉴스 5건</p>
+  </header>
+
+  <section class="intro">
+    <div class="lang-row">
+      <span class="lang-tag">KO</span>
+      <div class="lang-text">이 페이지는 <strong>베트남 AI 데이터센터(AI DC) 산업</strong>의 최근 주요 뉴스 5건을 <strong>최신 순</strong>으로 정리한 자료입니다. 각 카드 좌측 상단의 번호(1~5)는 보도 발생 시점 순서를 나타냅니다.</div>
+    </div>
+    <div class="lang-row">
+      <span class="lang-tag">EN</span>
+      <div class="lang-text">This page presents five key news milestones in <strong>Vietnam's AI data center industry</strong>, sorted in <strong>reverse chronological order (newest first)</strong>. The badge numbers (1–5) on each card indicate the chronological sequence in which the news appeared.</div>
+    </div>
+    <div class="lang-row">
+      <span class="lang-tag">VI</span>
+      <div class="lang-text">Trang này tổng hợp 5 mốc tin tức quan trọng về <strong>ngành trung tâm dữ liệu AI của Việt Nam</strong>, sắp xếp <strong>theo thứ tự thời gian ngược (mới nhất ở trên cùng)</strong>. Số trên mỗi thẻ (1–5) thể hiện trình tự thời gian các tin tức xuất hiện.</div>
+    </div>
+  </section>
+
+  <article class="article">
+    <div class="article-content">
+      <span class="badge">5</span>
+      <div class="date">2026년 2월 10일</div>
+      <h2>FPT, UAE G42와 AI 데이터센터 공식 파트너십 체결</h2>
+      <div class="source">출처: Nikkei Asia</div>
+      <p class="summary">베트남 최대 IT 기업 <strong>FPT</strong>가 UAE 정부 후원 기술기업 <strong>G42</strong>와 AI 및 데이터센터 협력 계약 체결. G42의 2025년 베트남 진출 의향이 1년 만에 공식 파트너십으로 구체화되며 베트남 AI 인프라의 <strong>국제 자본 본격 유입</strong> 단계 진입.</p>
+      <a href="https://asia.nikkei.com/business/technology/artificial-intelligence/vietnam-s-fpt-partners-with-uae-s-g42-on-ai-data-centers" target="_blank">asia.nikkei.com →</a>
+    </div>
+    <div class="article-image">
+      <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ35wPmdQH1siZY7RIUUjiouucVKkdchVaeetZc7lWaSo-dcvEdfJGOqrY&usqp=CAI&s" alt="FPT G42 partnership">
+    </div>
+  </article>
+
+  <article class="article">
+    <div class="article-content">
+      <span class="badge">4</span>
+      <div class="date">2026년 2월 9일</div>
+      <h2>HCMC, 10억 달러 규모 디지털자산·AI 데이터센터 협약 2건 동시 체결</h2>
+      <div class="source">출처: Business Times (Singapore)</div>
+      <p class="summary">호치민시 당국이 각각 10억 달러 규모의 디지털자산 인프라와 AI 데이터센터 협약을 같은 날 공식 체결. 시 정부는 <strong>창의·혁신·기술 단지</strong>와 연계된 대규모 DC 전담 지원을 약속하며 HCMC의 디지털 허브 위상을 굳히는 모습.</p>
+      <a href="https://www.businesstimes.com.sg/international/asean/ho-chi-minh-city-unveils-twin-us1-billion-digital-asset-ai-data-centre-pacts" target="_blank">businesstimes.com.sg →</a>
+    </div>
+    <div class="article-image">
+      <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSouMR7J6oo89aT_Yk3nseHUdTAMliq1m8Yyep__FcqFHSUc7uMJyupuP8&usqp=CAI&s" alt="HCMC digital pacts">
+    </div>
+  </article>
+
+  <article class="article">
+    <div class="article-content">
+      <span class="badge">3</span>
+      <div class="date">2026년 1월 17일</div>
+      <h2>HCMC, 데이터센터 투자 전담 태스크포스 설립 — 수십억 달러 자본 유입</h2>
+      <div class="source">출처: Vietnam News</div>
+      <p class="summary">호치민시가 데이터센터 부동산·인프라 분야 투자 절차를 신속 처리하기 위한 <strong>전담 태스크포스</strong>를 공식 설치. 시 정부는 대규모 DC 부지 인허가·전력공급·세제혜택을 일괄 지원하며, "수십억 달러" 규모 외국 자본의 진입 움직임이 가속됨.</p>
+      <a href="https://vietnamnews.vn/economy/1763927/billion-dollar-capital-seeks-new-opportunities-in-data-centre-real-estate.html" target="_blank">vietnamnews.vn →</a>
+    </div>
+    <div class="article-image">
+      <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSAFHd9CiqzHIDf11HJbs_3EQIBrBugS7JCmOa0D9Z2-32xd1YnXSq_5Ok&usqp=CAI&s" alt="HCMC DC task force">
+    </div>
+  </article>
+
+  <article class="article">
+    <div class="article-content">
+      <span class="badge">2</span>
+      <div class="date">2025년 12월 29일</div>
+      <h2>Create Capital + Haimaker.ai, 10억 달러 전국 AI DC 네트워크 계획 발표</h2>
+      <div class="source">출처: The Investor</div>
+      <p class="summary">베트남 상장사 <strong>Create Capital Vietnam (HoSE: CRC)</strong>과 AI 기업 <strong>Haimaker.ai</strong>가 베트남 전국에 AI 특화 데이터센터 네트워크를 구축한다는 10억 달러 규모 합작 계획 공개. <strong>국내 자본·국내 AI 사업자 주도</strong>의 첫 대형 발표로 의미.</p>
+      <a href="https://theinvestor.vn/create-capital-vietnam-haimakerai-plan-1-bln-ai-data-center-network-d17987.html" target="_blank">theinvestor.vn →</a>
+    </div>
+    <div class="article-image">
+      <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSDT6EAP-XDNaffrhEulzm7uWUENAL67RsQDeeRb5Gk9hg9cY8o4ZfJl2M&usqp=CAI&s" alt="Create Capital Haimaker AI DC">
+    </div>
+  </article>
+
+  <article class="article">
+    <div class="article-content">
+      <span class="badge">1</span>
+      <div class="date">2025년 7월 10일</div>
+      <h2>UAE G42, 베트남 파트너와 20억 달러 하이퍼스케일 DC 추진 발표</h2>
+      <div class="source">출처: The Investor</div>
+      <p class="summary">UAE 국부펀드 무바달라가 후원하는 AI·기술 기업 <strong>G42</strong>가 베트남 남부에 20억 달러 규모 하이퍼스케일 데이터센터 개발 계획 공개. <strong>중동 자본의 베트남 AI 인프라 진출 신호탄</strong>으로, 이후 일련의 외국 자본 유입을 촉발하는 출발점이 됨.</p>
+      <a href="https://theinvestor.vn/uae-tech-firm-g42-vietnamese-partners-plan-2-bln-hyperscale-data-center-in-southern-vietnam-hub-d16285.html" target="_blank">theinvestor.vn →</a>
+    </div>
+    <div class="article-image">
+      <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTdoKVuzWj_f1CerdUAbqGKL8giyzYifrcSFHuwiOqrOgAFPHfNJeiRbxU&usqp=CAI&s" alt="G42 Vietnam hyperscale DC">
+    </div>
+  </article>
+
+  <div class="summary-box">
+    <h3>📊 산업 흐름 요약</h3>
+    <p>2025년 7월 UAE <strong>G42</strong>의 베트남 진출 의향(20억 달러 하이퍼스케일 DC)으로 시작된 베트남 AI DC 투자 흐름은, 2025년 말 국내 자본(<strong>Create Capital + Haimaker.ai</strong>)의 10억 달러 규모 전국 AI DC 네트워크 계획 발표를 거쳐, 2026년 초 <strong>HCMC의 20억 달러 디지털 인프라 협약 2건</strong>과 <strong>FPT–G42 공식 파트너십</strong>으로 이어지며 국제 자본·국내 사업자·지방정부가 결합된 본격 산업화 단계로 진입했습니다.</p>
+  </div>
+
+  <section class="map-section">
+    <h2>🗺️ 베트남 AI 데이터센터 사이트 지도</h2>
+    <p class="map-desc">
+      베트남 주요 AI 데이터센터 사이트 6곳과 3대 도시(하노이·호치민·다낭)를 정리한 지도입니다. <strong>호치민 메가 클러스터</strong>(FPT–G42, VNG, CMC, Viettel 등 다수 사업자), <strong>다낭 FPT AI Factory</strong>(NVIDIA 협력), <strong>하노이 DC Hub</strong>(Viettel IDC, VNPT 등 성숙 시장), 그리고 <strong>Long Hau / Long An·하이퐁·빈즈엉</strong>의 신규 부지까지 — 베트남 AI 인프라가 어디서 형성되고 있는지 한 장에 보여줍니다.
+    </p>
+    <img src="Vietnam_AI_DC_Map.png" alt="Vietnam AI Data Center Sites Map">
+    <div class="caption">
+      🟩 Active · 🟢 Operational (NVIDIA AI Factory) · 🟧 Active+Planned (Mega Cluster) · 🟦 Planned · ⭐ Major City
+      <br>출처: VIR · The Investor · Nikkei Asia · Business Times · w.media
+    </div>
+  </section>
+</div>
+</body>
+</html>

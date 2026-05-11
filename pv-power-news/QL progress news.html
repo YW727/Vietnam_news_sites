@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>Quỳnh Lập LNG 발전 사업 진행 일지</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Segoe UI', 'Malgun Gothic', sans-serif;
+    background: #f4f6fa;
+    color: #1a2332;
+    line-height: 1.6;
+    padding: 40px 20px;
+  }
+  .container { max-width: 960px; margin: 0 auto; }
+  header {
+    text-align: center;
+    margin-bottom: 40px;
+    padding-bottom: 24px;
+    border-bottom: 3px solid #0a4d8c;
+  }
+  header h1 {
+    font-size: 2.2rem;
+    color: #0a4d8c;
+    margin-bottom: 8px;
+  }
+  header p { color: #5a6a7e; font-size: 1rem; }
+  .timeline-line {
+    display: inline-block;
+    width: 60px;
+    height: 4px;
+    background: #f39c12;
+    margin: 12px 0;
+    border-radius: 2px;
+  }
+  .intro {
+    background: #fff;
+    border-left: 4px solid #0a4d8c;
+    border-radius: 8px;
+    padding: 20px 24px;
+    margin-bottom: 28px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  }
+  .intro .lang-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 10px 0;
+  }
+  .intro .lang-row + .lang-row {
+    border-top: 1px solid #eef1f5;
+  }
+  .intro .lang-tag {
+    flex-shrink: 0;
+    background: #0a4d8c;
+    color: #fff;
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 12px;
+    letter-spacing: 0.5px;
+    margin-top: 3px;
+    min-width: 36px;
+    text-align: center;
+  }
+  .intro .lang-text {
+    color: #2c3e50;
+    font-size: 0.98rem;
+    line-height: 1.55;
+  }
+  .article {
+    display: flex;
+    gap: 24px;
+    background: #fff;
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    transition: transform 0.2s, box-shadow 0.2s;
+    align-items: flex-start;
+  }
+  .article:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+  }
+  .article-content { flex: 1; min-width: 0; }
+  .article-image {
+    flex-shrink: 0;
+    width: 200px;
+    height: 140px;
+    border-radius: 8px;
+    overflow: hidden;
+    background: #e8edf3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .article-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .badge {
+    display: inline-block;
+    background: #0a4d8c;
+    color: #fff;
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 12px;
+    margin-bottom: 8px;
+  }
+  .date {
+    color: #f39c12;
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-bottom: 6px;
+  }
+  .article h2 {
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+    color: #1a2332;
+    line-height: 1.4;
+  }
+  .source {
+    color: #5a6a7e;
+    font-size: 0.85rem;
+    margin-bottom: 8px;
+    font-style: italic;
+  }
+  .summary {
+    color: #2c3e50;
+    font-size: 0.95rem;
+    margin-bottom: 12px;
+  }
+  .article a {
+    color: #0a4d8c;
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 500;
+    word-break: break-all;
+  }
+  .article a:hover { text-decoration: underline; }
+  .summary-box {
+    margin-top: 30px;
+    padding: 24px;
+    background: linear-gradient(135deg, #0a4d8c 0%, #1a6cb0 100%);
+    color: #fff;
+    border-radius: 12px;
+  }
+  .summary-box h3 { margin-bottom: 12px; font-size: 1.1rem; }
+  .summary-box p { font-size: 0.95rem; opacity: 0.95; }
+  .map-section {
+    margin-top: 36px;
+    padding: 28px;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    border-top: 4px solid #0a4d8c;
+  }
+  .map-section h2 {
+    color: #0a4d8c;
+    font-size: 1.4rem;
+    margin-bottom: 10px;
+  }
+  .map-section .map-desc {
+    color: #5a6a7e;
+    font-size: 0.95rem;
+    margin-bottom: 18px;
+    line-height: 1.6;
+  }
+  .map-section img {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+    border: 1px solid #d6dce6;
+    display: block;
+  }
+  .map-section .caption {
+    margin-top: 12px;
+    font-size: 0.85rem;
+    color: #5a6a7e;
+    text-align: center;
+    font-style: italic;
+  }
+  @media (max-width: 640px) {
+    .article { flex-direction: column-reverse; }
+    .article-image { width: 100%; height: 180px; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1>Quỳnh Lập LNG 발전 사업 진행 일지</h1>
+    <div class="timeline-line"></div>
+    <p>베트남 응에안성 23억 달러 LNG 화력발전 프로젝트의 단계별 추진 경과</p>
+  </header>
+
+  <section class="intro">
+    <div class="lang-row">
+      <span class="lang-tag">KO</span>
+      <div class="lang-text">이 페이지는 베트남 응에안성에서 추진 중인 <strong>꾸인럽(Quỳnh Lập) LNG 화력발전 사업</strong>의 주요 보도 5건을 <strong>최신 순</strong>으로 정리한 자료입니다. 각 카드 좌측 상단의 번호(1~5)는 사업의 단계 순서를 나타냅니다.</div>
+    </div>
+    <div class="lang-row">
+      <span class="lang-tag">EN</span>
+      <div class="lang-text">This page presents five key news milestones of the <strong>Quỳnh Lập LNG-fired power project</strong> in Nghệ An province, Vietnam, sorted in <strong>reverse chronological order (newest first)</strong>. The badge numbers (1–5) on each card indicate the project's stage sequence.</div>
+    </div>
+    <div class="lang-row">
+      <span class="lang-tag">VI</span>
+      <div class="lang-text">Trang này tổng hợp 5 mốc tin tức quan trọng của <strong>Dự án Nhà máy điện LNG Quỳnh Lập</strong> tại tỉnh Nghệ An, Việt Nam, được sắp xếp <strong>theo thứ tự thời gian ngược (mới nhất ở trên cùng)</strong>. Số trên mỗi thẻ (1–5) thể hiện trình tự giai đoạn của dự án.</div>
+    </div>
+  </section>
+
+  <article class="article">
+    <div class="article-content">
+      <span class="badge">5</span>
+      <div class="date">2026년 4월 23일경</div>
+      <h2>23억 달러 꾸인럽 LNG 발전소, 5월 착공 확정</h2>
+      <div class="source">출처: VIR (Vietnam Investment Review)</div>
+      <p class="summary">PV Power, 응에안 슈가, SK이노베이션 컨소시엄이 투자한 23억 달러 규모 꾸인럽 LNG 화력발전소가 2026년 5월 공식 착공 예정. <strong>승인 → 투자자 선정 → 부지 인계 → 착공</strong>으로 이어지는 일련의 절차가 마무리되며 실제 건설 단계 진입.</p>
+      <a href="https://vir.com.vn/23-billion-quynh-lap-lng-plant-to-kick-off-in-may-151400.html" target="_blank">vir.com.vn →</a>
+    </div>
+    <div class="article-image">
+      <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQkhzoRF3Bkvwj6BUyvmvOpCf05gxUubPsi27L5H1oOLIklVfk8cX9ZF3k&usqp=CAI&s" alt="Quynh Lap LNG kick off">
+    </div>
+  </article>
+
+  <article class="article">
+    <div class="article-content">
+      <span class="badge">4</span>
+      <div class="date">2026년 2월 20일</div>
+      <h2>SK이노베이션·PV Power·NASU 컨소시엄, 사업자 공식 선정</h2>
+      <div class="source">출처: Offshore Energy</div>
+      <p class="summary">SK이노베이션 + <strong>PV Power</strong> + 베트남 NASU 3사 컨소시엄이 23억 달러 규모 꾸인럽 LNG 발전 사업의 공식 사업자로 선정. 1,500MW 발전소·LNG 터미널·항만 통합 패키지로 확정. <strong>투자자 선정 완료</strong> 단계.</p>
+      <a href="https://www.offshore-energy.biz/consortium-selected-to-lead-vietnams-largest-lng-power-project/" target="_blank">offshore-energy.biz →</a>
+    </div>
+    <div class="article-image">
+      <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT4C9PQ3mbohQ9TC9EP-82v6Uyqm9PZvynAE1jPfHM3kZgbeeiCv5lOBjg&usqp=CAI&s" alt="Consortium selected">
+    </div>
+  </article>
+
+  <article class="article">
+    <div class="article-content">
+      <span class="badge">3</span>
+      <div class="date">2026년 1월 22일</div>
+      <h2>응에안성, 꾸인럽 LNG 발전소 투자자 선정 기준 발표</h2>
+      <div class="source">출처: VIR (Vietnam Investment Review)</div>
+      <p class="summary">응에안성 인민위원회가 꾸인럽 LNG 발전소 투자자 선정을 위한 평가 기준을 공식 발표. <strong>투자자 선정 절차가 본격 가동</strong>되며 사업이 행정 단계를 넘어서기 시작.</p>
+      <a href="https://vir.com.vn/nghe-an-issues-criteria-for-quynh-lap-lng-plant-selection-145313.html" target="_blank">vir.com.vn →</a>
+    </div>
+    <div class="article-image">
+      <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQkxlRZAP5VspqERjc9AyvIkSnyqurKZgcZCMUpZKO19yU6IYXvS813b5Q&usqp=CAI&s" alt="Investor selection criteria">
+    </div>
+  </article>
+
+  <article class="article">
+    <div class="article-content">
+      <span class="badge">2</span>
+      <div class="date">2025년 8월 26일</div>
+      <h2>SK이노베이션, 20억 달러 꾸인럽 LNG 사업 개발 의향 공식화</h2>
+      <div class="source">출처: VIR (Vietnam Investment Review)</div>
+      <p class="summary">한국 SK이노베이션이 20억 달러 규모 꾸인럽 LNG 화력발전 사업 개발에 관심을 표명하며 응에안성 당국에 제안서 제출. <strong>외국인 핵심 투자자 후보</strong>가 등장한 단계.</p>
+      <a href="https://vir.com.vn/sk-innovation-eyes-over-2-billion-quynh-lap-lng-thermal-power-plant-135203.html" target="_blank">vir.com.vn →</a>
+    </div>
+    <div class="article-image">
+      <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQU0qQs4UedMXuIwVcMI13ex1OkKnCqWU_htkjuT9X3wS2rKmaBbI-ZK1Q&usqp=CAI&s" alt="SK Innovation Quynh Lap interest">
+    </div>
+  </article>
+
+  <article class="article">
+    <div class="article-content">
+      <span class="badge">1</span>
+      <div class="date">2025년 6월 4일</div>
+      <h2>꾸인럽 LNG 발전 사업, 원칙적 승인 신청 단계 진입</h2>
+      <div class="source">출처: The Investor</div>
+      <p class="summary">21억 5천만 달러 규모의 응에안성 꾸인럽 LNG 화력발전 사업이 정부의 원칙적 투자 승인(in-principle approval)을 신청하며 국내외 투자자들의 관심을 모으기 시작. <strong>사업의 출발점</strong>에 해당하는 단계.</p>
+      <a href="https://theinvestor.vn/quynh-lap-lng-fired-power-project-in-central-vietnam-seeks-in-principle-approval-d15888.html" target="_blank">theinvestor.vn →</a>
+    </div>
+    <div class="article-image">
+      <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcThJKQ3tr_zMzkfpCDynp3AlIFTHODKO0dMN33_dr7-7-0fN4Ukf0JiVds&usqp=CAI&s" alt="Quynh Lap LNG project approval">
+    </div>
+  </article>
+
+  <div class="summary-box">
+    <h3>📊 사업 진행 요약</h3>
+    <p>꾸인럽 LNG 발전 사업은 <strong>2025년 6월 원칙적 승인 신청</strong>을 시작으로, <strong>2025년 8월 SK이노베이션 참여 의향</strong> → <strong>2026년 1월 투자자 선정 기준 발표</strong> → <strong>2026년 2월 SK·PV Power·NASU 컨소시엄 공식 선정</strong> → <strong>2026년 5월 착공</strong>의 단계를 거치며 약 11개월 만에 행정 절차를 마무리하고 실제 건설 단계에 진입했습니다.</p>
+  </div>
+
+  <section class="map-section">
+    <h2>🗺️ 베트남 LNG 발전소 분포 지도</h2>
+    <p class="map-desc">
+      꾸인럽 LNG 사업을 포함해 베트남 전역에서 추진 중인 <strong>11개 LNG 화력발전소</strong>의 위치, 사업 상태(건설 중 / 계획 단계), 관여 기업, 그리고 하노이·호치민으로부터의 직선 거리를 한 장에 정리한 지도입니다. 베트남의 LNG 화력발전이 북부·중부·남부에 걸쳐 어떻게 분포되고 있으며, 각 사업에 어떤 국내외 컨소시엄이 참여하고 있는지 직관적으로 볼 수 있습니다.
+    </p>
+    <img src="Vietnam_LNG_Map.png" alt="Vietnam LNG Power Plants Map">
+    <div class="caption">
+      🟥 건설 중 (Under Construction)  ·  🔵 계획 단계 (Planned)  ·  ⭐ 주요 도시 (Hanoi / Ho Chi Minh City)
+      <br>출처: GADM v4.1 (행정 경계) · Vietnam Investment Review · The Investor · Reuters · Global Energy Monitor
+    </div>
+  </section>
+</div>
+</body>
+</html>
