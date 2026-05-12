@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>라파엘 봉사 출석 체크</title>
+<style>
+  :root {
+    --bg: #f5f7fb;
+    --card: #ffffff;
+    --text: #1f2937;
+    --muted: #6b7280;
+    --border: #e5e7eb;
+    --primary: #2563eb;
+    --primary-hover: #1d4ed8;
+    --success: #16a34a;
+    --danger: #dc2626;
+    --warning: #f59e0b;
+    --absent: #f3f4f6;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Apple SD Gothic Neo",
+      "Malgun Gothic", "맑은 고딕", sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.5;
+  }
+  header {
+    background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
+    color: white;
+    padding: 24px 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  }
+  header h1 { margin: 0; font-size: 22px; font-weight: 700; }
+  header p { margin: 4px 0 0; font-size: 13px; opacity: 0.9; }
+  .container { max-width: 960px; margin: 0 auto; padding: 16px; }
+  .tabs {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 16px;
+    border-bottom: 1px solid var(--border);
+    overflow-x: auto;
+  }
+  .tab {
+    background: none;
+    border: none;
+    padding: 12px 18px;
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--muted);
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    white-space: nowrap;
+    transition: color .15s, border-color .15s;
+  }
+  .tab.active { color: var(--primary); border-bottom-color: var(--primary); }
+  .tab:hover { color: var(--primary); }
+  .card {
+    background: var(--card);
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    margin-bottom: 16px;
+  }
+  .card h2 { margin: 0 0 12px; font-size: 17px; }
+  .row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+  input[type="text"], input[type="date"], select {
+    padding: 9px 12px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-size: 14px;
+    font-family: inherit;
+    background: white;
+    outline: none;
+  }
+  input[type="text"]:focus, input[type="date"]:focus, select:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(37,99,235,.15);
+  }
+  button.btn {
+    padding: 9px 16px;
+    background: var(--primary);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background .15s;
+  }
+  button.btn:hover { background: var(--primary-hover); }
+  button.btn.secondary { background: #e5e7eb; color: var(--text); }
+  button.btn.secondary:hover { background: #d1d5db; }
+  button.btn.danger { background: var(--danger); }
+  button.btn.danger:hover { background: #b91c1c; }
+  .member-list { display: flex; flex-direction: column; gap: 6px; margin-top: 12px; }
+  .member-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 14px;
+    background: #f9fafb;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+  }
+  .member-item .name { font-weight: 500; }
+  .icon-btn {
+    background: none;
+    border: none;
+    color: var(--danger);
+    cursor: pointer;
+    font-size: 13px;
+    padding: 4px 8px;
+    border-radius: 6px;
+  }
+  .icon-btn:hover { background: #fee2e2; }
+  table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  th, td { padding: 10px 8px; text-align: left; border-bottom: 1px solid var(--border); }
+  th { background: #f9fafb; font-weight: 600; color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .attendance-row td { vertical-align: middle; }
+  .att-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: white;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 700;
+    transition: all .15s;
+  }
+  .att-btn.present { background: var(--success); color: white; border-color: var(--success); }
+  .att-btn.absent { background: var(--absent); color: var(--muted); }
+  .role-select { min-width: 130px; }
+  .role-select:disabled { background: #f3f4f6; color: #9ca3af; }
+  .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin-bottom: 16px; }
+  .stat-box {
+    background: linear-gradient(135deg, #eff6ff, #ede9fe);
+    border-radius: 10px;
+    padding: 14px 16px;
+  }
+  .stat-box .label { font-size: 12px; color: var(--muted); margin-bottom: 4px; }
+  .stat-box .value { font-size: 24px; font-weight: 700; color: var(--text); }
+  .empty { text-align: center; color: var(--muted); padding: 32px 16px; font-size: 14px; }
+  .bar-wrap { width: 100%; background: #f3f4f6; border-radius: 4px; height: 8px; overflow: hidden; }
+  .bar { height: 100%; background: linear-gradient(90deg, #2563eb, #7c3aed); border-radius: 4px; }
+  .pill {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 999px;
+    font-size: 11px;
+    background: #ede9fe;
+    color: #6d28d9;
+    margin: 1px 2px;
+  }
+  .session-controls { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
+  .delete-session-link { color: var(--danger); font-size: 13px; cursor: pointer; text-decoration: underline; background: none; border: none; padding: 0; }
+  .toolbar { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+  @media (max-width: 600px) {
+    .container { padding: 12px; }
+    .card { padding: 14px; }
+    th, td { padding: 8px 4px; font-size: 13px; }
+    .role-select { min-width: 100px; font-size: 13px; }
+  }
+</style>
+</head>
+<body>
+<header>
+  <div class="container" style="padding-top:0;padding-bottom:0;">
+    <h1>🤝 라파엘 봉사 출석 체크</h1>
+    <p>주말 봉사활동 회원 출석 및 역할 관리</p>
+  </div>
+</header>
+
+<div class="container">
+  <div class="tabs">
+    <button class="tab active" data-tab="attendance">📅 출석 체크</button>
+    <button class="tab" data-tab="members">👥 회원 관리</button>
+    <button class="tab" data-tab="roles">🎯 역할 관리</button>
+    <button class="tab" data-tab="stats">📊 통계</button>
+    <button class="tab" data-tab="data">💾 데이터</button>
+  </div>
+
+  <!-- 출석 체크 탭 -->
+  <section id="tab-attendance" class="tab-panel">
+    <div class="card">
+      <h2>출석 세션</h2>
+      <div class="row">
+        <input type="date" id="session-date">
+        <button class="btn" id="create-session-btn">새 세션 만들기</button>
+        <select id="session-picker" style="flex:1; min-width:180px;"></select>
+      </div>
+    </div>
+
+    <div class="card" id="attendance-table-card">
+      <div class="session-controls">
+        <h2 id="session-title">세션을 선택하세요</h2>
+        <button class="delete-session-link" id="delete-session-btn" style="display:none;">이 세션 삭제</button>
+      </div>
+      <div id="attendance-table-wrap">
+        <p class="empty">먼저 위에서 날짜를 선택하고 새 세션을 만들거나 기존 세션을 선택하세요.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 회원 관리 탭 -->
+  <section id="tab-members" class="tab-panel" hidden>
+    <div class="card">
+      <h2>회원 추가</h2>
+      <div class="row">
+        <input type="text" id="member-name-input" placeholder="이름 입력" style="flex:1; min-width:180px;">
+        <button class="btn" id="add-member-btn">추가</button>
+      </div>
+      <div class="member-list" id="member-list"></div>
+    </div>
+  </section>
+
+  <!-- 역할 관리 탭 -->
+  <section id="tab-roles" class="tab-panel" hidden>
+    <div class="card">
+      <h2>봉사 역할 추가</h2>
+      <p style="color:var(--muted); font-size:13px; margin-top:0;">출석 체크 시 회원에게 배정할 수 있는 역할을 관리합니다.</p>
+      <div class="row">
+        <input type="text" id="role-name-input" placeholder="예: 식사 준비, 청소, 운전" style="flex:1; min-width:180px;">
+        <button class="btn" id="add-role-btn">추가</button>
+      </div>
+      <div class="member-list" id="role-list"></div>
+    </div>
+  </section>
+
+  <!-- 통계 탭 -->
+  <section id="tab-stats" class="tab-panel" hidden>
+    <div class="card">
+      <h2>전체 요약</h2>
+      <div class="stats-grid" id="stats-grid"></div>
+    </div>
+    <div class="card">
+      <h2>회원별 출석률</h2>
+      <div id="member-stats-wrap"></div>
+    </div>
+  </section>
+
+  <!-- 데이터 탭 -->
+  <section id="tab-data" class="tab-panel" hidden>
+    <div class="card">
+      <h2>백업 / 복원</h2>
+      <p style="color:var(--muted); font-size:13px;">데이터는 이 브라우저에 저장됩니다. 다른 기기로 이동하거나 백업하려면 JSON으로 내보내세요.</p>
+      <div class="toolbar">
+        <button class="btn secondary" id="export-btn">📤 JSON 내보내기</button>
+        <button class="btn secondary" id="import-btn">📥 JSON 가져오기</button>
+        <button class="btn secondary" id="export-csv-btn">📊 CSV 내보내기</button>
+        <button class="btn danger" id="reset-btn">🗑️ 전체 초기화</button>
+      </div>
+      <input type="file" id="import-file" accept="application/json" hidden>
+    </div>
+  </section>
+</div>
+
+<script>
+(() => {
+  const STORAGE_KEY = 'rafael-attendance-v1';
+  const DEFAULT_ROLES = ['진행', '음악/찬양', '식사 준비', '청소', '운전', '일반 봉사'];
+
+  // ---------- state ----------
+  let state = load();
+
+  function load() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (raw) return JSON.parse(raw);
+    } catch (e) { console.warn('load failed', e); }
+    return {
+      members: [],          // [{id, name}]
+      roles: [...DEFAULT_ROLES],
+      sessions: [],         // [{id, date, attendance: {memberId: {present:bool, role:string}}}]
+      currentSessionId: null,
+    };
+  }
+  function save() {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  }
+  function uid() {
+    return Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+  }
+
+  // ---------- tab nav ----------
+  document.querySelectorAll('.tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      document.querySelectorAll('.tab-panel').forEach(p => p.hidden = true);
+      document.getElementById('tab-' + tab.dataset.tab).hidden = false;
+      if (tab.dataset.tab === 'stats') renderStats();
+    });
+  });
+
+  // ---------- members ----------
+  const memberInput = document.getElementById('member-name-input');
+  document.getElementById('add-member-btn').addEventListener('click', addMember);
+  memberInput.addEventListener('keydown', e => { if (e.key === 'Enter') addMember(); });
+
+  function addMember() {
+    const name = memberInput.value.trim();
+    if (!name) return;
+    if (state.members.some(m => m.name === name)) {
+      alert('이미 같은 이름의 회원이 있습니다.');
+      return;
+    }
+    state.members.push({ id: uid(), name });
+    memberInput.value = '';
+    save();
+    renderMembers();
+    renderAttendance();
+  }
+
+  function deleteMember(id) {
+    const m = state.members.find(x => x.id === id);
+    if (!m) return;
+    if (!confirm(`'${m.name}' 회원을 삭제할까요? 출석 기록도 함께 삭제됩니다.`)) return;
+    state.members = state.members.filter(x => x.id !== id);
+    state.sessions.forEach(s => { delete s.attendance[id]; });
+    save();
+    renderMembers();
+    renderAttendance();
+  }
+
+  function renderMembers() {
+    const list = document.getElementById('member-list');
+    if (state.members.length === 0) {
+      list.innerHTML = '<p class="empty">등록된 회원이 없습니다. 위에서 추가하세요.</p>';
+      return;
+    }
+    list.innerHTML = state.members.map(m => `
+      <div class="member-item">
+        <span class="name">${escapeHtml(m.name)}</span>
+        <button class="icon-btn" data-action="delete-member" data-id="${m.id}">삭제</button>
+      </div>
+    `).join('');
+    list.querySelectorAll('[data-action="delete-member"]').forEach(b => {
+      b.addEventListener('click', () => deleteMember(b.dataset.id));
+    });
+  }
+
+  // ---------- roles ----------
+  const roleInput = document.getElementById('role-name-input');
+  document.getElementById('add-role-btn').addEventListener('click', addRole);
+  roleInput.addEventListener('keydown', e => { if (e.key === 'Enter') addRole(); });
+
+  function addRole() {
+    const name = roleInput.value.trim();
+    if (!name) return;
+    if (state.roles.includes(name)) {
+      alert('이미 같은 역할이 있습니다.');
+      return;
+    }
+    state.roles.push(name);
+    roleInput.value = '';
+    save();
+    renderRoles();
+    renderAttendance();
+  }
+
+  function deleteRole(name) {
+    if (!confirm(`'${name}' 역할을 삭제할까요? 기존 출석 기록의 역할 값은 유지됩니다.`)) return;
+    state.roles = state.roles.filter(r => r !== name);
+    save();
+    renderRoles();
+    renderAttendance();
+  }
+
+  function renderRoles() {
+    const list = document.getElementById('role-list');
+    if (state.roles.length === 0) {
+      list.innerHTML = '<p class="empty">등록된 역할이 없습니다.</p>';
+      return;
+    }
+    list.innerHTML = state.roles.map(r => `
+      <div class="member-item">
+        <span class="name">${escapeHtml(r)}</span>
+        <button class="icon-btn" data-role="${escapeHtml(r)}">삭제</button>
+      </div>
+    `).join('');
+    list.querySelectorAll('.icon-btn').forEach(b => {
+      b.addEventListener('click', () => deleteRole(b.dataset.role));
+    });
+  }
+
+  // ---------- sessions ----------
+  document.getElementById('create-session-btn').addEventListener('click', createSession);
+  document.getElementById('session-picker').addEventListener('change', e => {
+    state.currentSessionId = e.target.value || null;
+    save();
+    renderAttendance();
+  });
+  document.getElementById('delete-session-btn').addEventListener('click', deleteCurrentSession);
+
+  function createSession() {
+    const date = document.getElementById('session-date').value;
+    if (!date) { alert('날짜를 선택하세요.'); return; }
+    if (state.sessions.some(s => s.date === date)) {
+      if (!confirm('해당 날짜의 세션이 이미 있습니다. 기존 세션으로 이동할까요?')) return;
+      const existing = state.sessions.find(s => s.date === date);
+      state.currentSessionId = existing.id;
+    } else {
+      const session = { id: uid(), date, attendance: {} };
+      state.sessions.push(session);
+      state.currentSessionId = session.id;
+    }
+    save();
+    renderSessionPicker();
+    renderAttendance();
+  }
+
+  function deleteCurrentSession() {
+    const s = currentSession();
+    if (!s) return;
+    if (!confirm(`${s.date} 세션을 삭제할까요?`)) return;
+    state.sessions = state.sessions.filter(x => x.id !== s.id);
+    state.currentSessionId = state.sessions.length ? state.sessions[state.sessions.length - 1].id : null;
+    save();
+    renderSessionPicker();
+    renderAttendance();
+  }
+
+  function currentSession() {
+    return state.sessions.find(s => s.id === state.currentSessionId) || null;
+  }
+
+  function renderSessionPicker() {
+    const picker = document.getElementById('session-picker');
+    const sorted = [...state.sessions].sort((a, b) => b.date.localeCompare(a.date));
+    picker.innerHTML = '<option value="">— 세션 선택 —</option>' +
+      sorted.map(s => {
+        const cnt = Object.values(s.attendance).filter(a => a.present).length;
+        return `<option value="${s.id}" ${s.id === state.currentSessionId ? 'selected' : ''}>${s.date} (출석 ${cnt}명)</option>`;
+      }).join('');
+  }
+
+  // ---------- attendance table ----------
+  function renderAttendance() {
+    const wrap = document.getElementById('attendance-table-wrap');
+    const title = document.getElementById('session-title');
+    const delBtn = document.getElementById('delete-session-btn');
+    const session = currentSession();
+
+    if (!session) {
+      title.textContent = '세션을 선택하세요';
+      delBtn.style.display = 'none';
+      wrap.innerHTML = '<p class="empty">먼저 위에서 날짜를 선택하고 새 세션을 만들거나 기존 세션을 선택하세요.</p>';
+      return;
+    }
+    title.textContent = `${session.date} 출석`;
+    delBtn.style.display = '';
+
+    if (state.members.length === 0) {
+      wrap.innerHTML = '<p class="empty">회원이 없습니다. "회원 관리" 탭에서 추가하세요.</p>';
+      return;
+    }
+
+    const roleOptions = ['<option value="">— 역할 선택 —</option>']
+      .concat(state.roles.map(r => `<option value="${escapeHtml(r)}">${escapeHtml(r)}</option>`))
+      .join('');
+
+    wrap.innerHTML = `
+      <table>
+        <thead>
+          <tr>
+            <th style="width:40%;">이름</th>
+            <th style="width:15%;">출석</th>
+            <th>역할</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${state.members.map(m => {
+            const a = session.attendance[m.id] || { present: false, role: '' };
+            // include previous role from attendance even if no longer in roles list
+            let opts = roleOptions;
+            if (a.role && !state.roles.includes(a.role)) {
+              opts = opts.replace('— 역할 선택 —</option>', `— 역할 선택 —</option><option value="${escapeHtml(a.role)}" selected>${escapeHtml(a.role)} (삭제됨)</option>`);
+            }
+            return `
+              <tr class="attendance-row" data-mid="${m.id}">
+                <td>${escapeHtml(m.name)}</td>
+                <td>
+                  <button class="att-btn ${a.present ? 'present' : 'absent'}" data-action="toggle">
+                    ${a.present ? 'O' : 'X'}
+                  </button>
+                </td>
+                <td>
+                  <select class="role-select" data-action="role" ${a.present ? '' : 'disabled'}>
+                    ${opts.replace(`value="${escapeHtml(a.role)}"`, `value="${escapeHtml(a.role)}" selected`)}
+                  </select>
+                </td>
+              </tr>
+            `;
+          }).join('')}
+        </tbody>
+      </table>
+    `;
+
+    wrap.querySelectorAll('.attendance-row').forEach(row => {
+      const mid = row.dataset.mid;
+      row.querySelector('[data-action="toggle"]').addEventListener('click', () => toggleAttendance(mid));
+      row.querySelector('[data-action="role"]').addEventListener('change', e => setRole(mid, e.target.value));
+    });
+  }
+
+  function toggleAttendance(memberId) {
+    const s = currentSession();
+    if (!s) return;
+    const a = s.attendance[memberId] || { present: false, role: '' };
+    a.present = !a.present;
+    if (!a.present) a.role = '';
+    s.attendance[memberId] = a;
+    save();
+    renderAttendance();
+    renderSessionPicker();
+  }
+
+  function setRole(memberId, role) {
+    const s = currentSession();
+    if (!s) return;
+    const a = s.attendance[memberId] || { present: false, role: '' };
+    a.role = role;
+    s.attendance[memberId] = a;
+    save();
+  }
+
+  // ---------- stats ----------
+  function renderStats() {
+    const grid = document.getElementById('stats-grid');
+    const totalSessions = state.sessions.length;
+    const totalMembers = state.members.length;
+    let totalPresent = 0;
+    state.sessions.forEach(s => {
+      totalPresent += Object.values(s.attendance).filter(a => a.present).length;
+    });
+    const avgAttend = totalSessions ? (totalPresent / totalSessions).toFixed(1) : '0';
+    const overallRate = (totalSessions && totalMembers)
+      ? Math.round((totalPresent / (totalSessions * totalMembers)) * 100)
+      : 0;
+
+    grid.innerHTML = `
+      <div class="stat-box"><div class="label">전체 회원</div><div class="value">${totalMembers}</div></div>
+      <div class="stat-box"><div class="label">전체 세션</div><div class="value">${totalSessions}</div></div>
+      <div class="stat-box"><div class="label">세션당 평균 참석</div><div class="value">${avgAttend}</div></div>
+      <div class="stat-box"><div class="label">전체 출석률</div><div class="value">${overallRate}%</div></div>
+    `;
+
+    const wrap = document.getElementById('member-stats-wrap');
+    if (totalMembers === 0) {
+      wrap.innerHTML = '<p class="empty">회원이 없습니다.</p>';
+      return;
+    }
+    if (totalSessions === 0) {
+      wrap.innerHTML = '<p class="empty">세션이 없습니다. 출석 체크 탭에서 세션을 만드세요.</p>';
+      return;
+    }
+
+    const rows = state.members.map(m => {
+      let present = 0;
+      const roleCount = {};
+      state.sessions.forEach(s => {
+        const a = s.attendance[m.id];
+        if (a && a.present) {
+          present++;
+          if (a.role) roleCount[a.role] = (roleCount[a.role] || 0) + 1;
+        }
+      });
+      const rate = Math.round((present / totalSessions) * 100);
+      const roles = Object.entries(roleCount)
+        .sort((a, b) => b[1] - a[1])
+        .map(([r, c]) => `<span class="pill">${escapeHtml(r)} ×${c}</span>`).join('');
+      return { name: m.name, present, rate, roles };
+    }).sort((a, b) => b.rate - a.rate);
+
+    wrap.innerHTML = `
+      <table>
+        <thead>
+          <tr>
+            <th>이름</th>
+            <th style="width:80px;">참석</th>
+            <th style="width:180px;">출석률</th>
+            <th>주요 역할</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${rows.map(r => `
+            <tr>
+              <td><strong>${escapeHtml(r.name)}</strong></td>
+              <td>${r.present} / ${totalSessions}</td>
+              <td>
+                <div style="display:flex;align-items:center;gap:8px;">
+                  <div class="bar-wrap" style="flex:1;"><div class="bar" style="width:${r.rate}%"></div></div>
+                  <span style="font-size:12px;color:var(--muted);min-width:36px;text-align:right;">${r.rate}%</span>
+                </div>
+              </td>
+              <td>${r.roles || '<span style="color:var(--muted);font-size:12px;">없음</span>'}</td>
+            </tr>
+          `).join('')}
+        </tbody>
+      </table>
+    `;
+  }
+
+  // ---------- data import/export ----------
+  document.getElementById('export-btn').addEventListener('click', () => {
+    const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
+    downloadBlob(blob, `rafael-attendance-${todayStr()}.json`);
+  });
+  document.getElementById('import-btn').addEventListener('click', () => {
+    document.getElementById('import-file').click();
+  });
+  document.getElementById('import-file').addEventListener('change', e => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      try {
+        const data = JSON.parse(reader.result);
+        if (!data.members || !data.sessions) throw new Error('형식이 올바르지 않습니다.');
+        if (!confirm('현재 데이터를 덮어쓸까요?')) return;
+        state = Object.assign({
+          members: [], roles: [...DEFAULT_ROLES], sessions: [], currentSessionId: null
+        }, data);
+        save();
+        renderAll();
+        alert('가져오기 완료');
+      } catch (err) {
+        alert('가져오기 실패: ' + err.message);
+      }
+    };
+    reader.readAsText(file);
+    e.target.value = '';
+  });
+  document.getElementById('export-csv-btn').addEventListener('click', exportCsv);
+  document.getElementById('reset-btn').addEventListener('click', () => {
+    if (!confirm('모든 데이터(회원, 세션, 역할)를 삭제할까요? 되돌릴 수 없습니다.')) return;
+    if (!confirm('정말로 초기화할까요?')) return;
+    state = { members: [], roles: [...DEFAULT_ROLES], sessions: [], currentSessionId: null };
+    save();
+    renderAll();
+  });
+
+  function exportCsv() {
+    if (state.sessions.length === 0) { alert('내보낼 세션이 없습니다.'); return; }
+    const sortedSessions = [...state.sessions].sort((a, b) => a.date.localeCompare(b.date));
+    const header = ['이름', ...sortedSessions.flatMap(s => [`${s.date} 출석`, `${s.date} 역할`])];
+    const rows = state.members.map(m => {
+      const row = [m.name];
+      sortedSessions.forEach(s => {
+        const a = s.attendance[m.id];
+        row.push(a && a.present ? 'O' : 'X');
+        row.push(a && a.role ? a.role : '');
+      });
+      return row;
+    });
+    const csv = [header, ...rows].map(r => r.map(csvCell).join(',')).join('\n');
+    // BOM for Excel Korean
+    const blob = new Blob(['﻿' + csv], { type: 'text/csv;charset=utf-8' });
+    downloadBlob(blob, `rafael-attendance-${todayStr()}.csv`);
+  }
+
+  function csvCell(v) {
+    const s = String(v ?? '');
+    if (/[",\n]/.test(s)) return '"' + s.replace(/"/g, '""') + '"';
+    return s;
+  }
+
+  function downloadBlob(blob, filename) {
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = filename; a.click();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  }
+
+  function todayStr() {
+    const d = new Date();
+    const pad = n => String(n).padStart(2, '0');
+    return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+  }
+
+  // ---------- utils ----------
+  function escapeHtml(s) {
+    return String(s).replace(/[&<>"']/g, c => ({
+      '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+    }[c]));
+  }
+
+  // ---------- init ----------
+  function renderAll() {
+    renderMembers();
+    renderRoles();
+    renderSessionPicker();
+    renderAttendance();
+    renderStats();
+  }
+
+  // default session-date to nearest upcoming Saturday/Sunday or today
+  (function defaultDate() {
+    const d = new Date();
+    document.getElementById('session-date').value = todayStr();
+  })();
+
+  renderAll();
+})();
+</script>
+</body>
+</html>

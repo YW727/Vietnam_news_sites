@@ -8,6 +8,7 @@ Monorepo containing two Vercel-deployed news sites that get auto-updated each mo
 |--------|----------------|-------|
 | `pv-power-news/` | https://pv-power-news.vercel.app | Vietnam PV Power / Quynh Lap LNG project progress |
 | `vietnam-ai-dc-news/` | https://vietnam-ai-dc-news.vercel.app | Vietnam AI Data Center industry news |
+| `rafael-attendance/` | (deploy separately) | Rafael 주말 봉사활동 출석/역할 관리 정적 웹앱 (localStorage 기반) |
 
 ## Daily Update Routine
 
